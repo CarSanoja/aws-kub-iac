@@ -132,7 +132,6 @@ Resources:
       RoleArn: !GetAtt EKSRole.Arn
       ResourcesVpcConfig:
         SubnetIds:
-          - Fn::ImportValue: !Sub "${EnvironmentName}-PublicSubnetID"
           - Fn::ImportValue: !Sub "${EnvironmentName}-PrivateSubnetID"
 
   NodeGroup:
@@ -261,6 +260,9 @@ Resources:
           FromPort: 22
           ToPort: 22
           CidrIp: !Ref HomeIp
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
 
 Outputs:
   EKSClusterName:

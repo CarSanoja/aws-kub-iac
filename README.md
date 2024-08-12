@@ -117,3 +117,60 @@ Amazon CloudWatch monitors your AWS resources and applications in real-time.
     RDSDBInstanceEndpoint:
         The endpoint of the RDS database, required for connecting the application to the database.
 
+# How the networkin works
+
+1. EKS Cluster in a Private Subnet
+
+The EKS cluster, which manages your Kubernetes workloads, is primarily placed in the private subnet. This setup ensures that the nodes (EC2 instances) running your applications are not directly exposed to the internet, providing a higher level of security.
+
+    Private Subnet: By placing the EKS nodes in a private subnet, you ensure that the applications and services running on these nodes are only accessible from within the VPC or through a controlled entry point like a bastion host or a load balancer.
+
+2. Bastion Host for Secure Access
+
+The Bastion Host serves as a secure gateway to access the resources in your private subnets, such as the EKS nodes.
+
+    Public Subnet Placement: The bastion host is placed in a public subnet with an associated public IP address. This allows you to SSH into the bastion host from your home IP address or another trusted location.
+
+    SSH Access: From the bastion host, you can securely SSH into the EKS nodes or other resources in the private subnet. This approach is considered more secure because it restricts direct access to private instances from the internet.
+
+3. Load Balancer for Exposing Services
+
+The Application Load Balancer (ALB) in the public subnet is responsible for directing traffic to your applications running in the EKS cluster.
+
+    Public Subnet Placement: The ALB is placed in the public subnet to accept traffic from the internet.
+
+    Targeting EKS Nodes: The ALB can route traffic to the EKS nodes running in the private subnet, thereby exposing your services to the outside world without directly exposing the EKS nodes.
+
+4. RDS Instance in Private Subnet
+
+The RDS database instance is deployed in the private subnet, ensuring that it is not directly accessible from the internet.
+
+    Private Subnet Placement: This configuration secures the database from external threats, with access restricted to applications running within the same VPC, typically via the EKS nodes.
+
+    Security and Management: The database credentials are securely managed using AWS Secrets Manager, and the database itself is managed by RDS, which handles backups, patching, and scaling.
+
+5. CodeBuild, ECR, and CI/CD Integration
+
+    ECR Repository: Stores Docker images that are built by your CI/CD pipeline using CodeBuild. These images can then be deployed on the EKS cluster.
+
+    CodeBuild: Automates the process of building, testing, and deploying your application. It pulls the source code from a GitHub repository, builds a Docker image, and pushes it to ECR.
+
+### How It All Ties Together
+
+    Deployment Workflow:
+        Developers push changes to the GitHub repository.
+        CodeBuild triggers a build, creates a Docker image, and pushes it to the ECR repository.
+        Kubernetes deployments in EKS pull the latest Docker image from ECR and deploy the application.
+        ALB routes incoming traffic to the EKS nodes that are running the application.
+
+    Access and Management:
+        Use the bastion host to securely manage and access the EKS nodes.
+        Use Secrets Manager to securely store and manage database credentials.
+
+### Considerations
+
+    Direct Interaction with Kubernetes:
+        If you need to interact with the Kubernetes API directly, you would typically do this from the bastion host. The bastion host can have kubectl installed and configured with the necessary permissions to manage the cluster.
+
+    Networking and Security:
+        Ensure that security groups and network ACLs are correctly configured to allow the necessary traffic between components while keeping everything secure.
