@@ -1,0 +1,62 @@
+[
+    {
+        "ParameterKey": "EnvironmentName",
+        "ParameterValue": "iac-kub"
+    },
+    {
+        "ParameterKey": "EksClusterName",
+        "ParameterValue": "eks-cluster"
+    },
+    {
+        "ParameterKey": "NodeInstanceType",
+        "ParameterValue": "t3.small"
+    },
+    {
+        "ParameterKey": "DesiredCapacity",
+        "ParameterValue": "2"
+    },
+    {
+        "ParameterKey": "MinSize",
+        "ParameterValue": "1"
+    },
+    {
+        "ParameterKey": "MaxSize",
+        "ParameterValue": "4"
+    },
+    {
+        "ParameterKey": "ImageId",
+        "ParameterValue": "ami-0abcdef1234567890"
+    },
+    {
+        "ParameterKey": "KeyName",
+        "ParameterValue": "my-key-pair"
+    },
+    {
+        "ParameterKey": "HomeIp",
+        "ParameterValue": "123.123.123.123/32"
+    },
+    {
+        "ParameterKey": "DBName",
+        "ParameterValue": "mydatabase"
+    },
+    {
+        "ParameterKey": "DBUsername",
+        "ParameterValue": "myuser"
+    },
+    {
+        "ParameterKey": "DBAllocatedStorage",
+        "ParameterValue": "20"
+    },
+    {
+        "ParameterKey": "DBInstanceClass",
+        "ParameterValue": "db.t3.micro"
+    },
+    {
+        "ParameterKey": "DBEngine",
+        "ParameterValue": "postgres"
+    },
+    {
+        "ParameterKey": "DBPort",
+        "ParameterValue": "5432"
+    }
+]
